@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net"
 	"os"
 
@@ -12,7 +13,9 @@ import (
 func main() {
 	logger, _ := zap.NewDevelopment()
 	slogger := logger.Sugar()
-	slogger.Debug("Application started")
+	if os.Getenv("DEV") == "dev" {
+		slogger.Debug("Application started")
+	}
 
 	app := cli.NewApp()
 	app.Name = "ncli"
@@ -35,7 +38,9 @@ func main() {
 				ns, err := net.LookupNS(c.String("host"))
 
 				if err != nil {
-					slogger.Errorf("Error occured in ns %v", err)
+					if os.Getenv("DEV") == "dev" {
+						slogger.Errorf("Error occured in ns %v", err)
+					}
 					return err
 				}
 
@@ -52,7 +57,9 @@ func main() {
 			Action: func(c *cli.Context) error {
 				ip, err := net.LookupIP(c.String("host"))
 				if err != nil {
-					slogger.Errorf("Error occured in ip %v", err)
+					if os.Getenv("DEV") == "dev" {
+						slogger.Errorf("Error occured in ip %v", err)
+					}
 					return err
 				}
 				for i := 0; i < len(ip); i++ {
@@ -68,7 +75,9 @@ func main() {
 			Action: func(c *cli.Context) error {
 				cname, err := net.LookupCNAME(c.String("host"))
 				if err != nil {
-					slogger.Errorf("Error occured in cname %v", err)
+					if os.Getenv("DEV") == "dev" {
+						slogger.Errorf("Error occured in cname %v", err)
+					}
 					return err
 				}
 				fmt.Println(cname)
@@ -82,7 +91,9 @@ func main() {
 			Action: func(c *cli.Context) error {
 				mx, err := net.LookupMX(c.String("host"))
 				if err != nil {
-					slogger.Errorf("Error occured in mx %v", err)
+					if os.Getenv("DEV") == "dev" {
+						slogger.Errorf("Error occured in mx %v", err)
+					}
 					return err
 				}
 				for i := 0; i < len(mx); i++ {
@@ -98,7 +109,9 @@ func main() {
 			Action: func(c *cli.Context) error {
 				addrs, err := net.LookupHost(c.String("host"))
 				if err != nil {
-					slogger.Errorf("Error occured in ha %v", err)
+					if os.Getenv("DEV") == "dev" {
+						slogger.Errorf("Error occured in ha %v", err)
+					}
 					return err
 				}
 				for i := 0; i < len(addrs); i++ {
@@ -111,7 +124,9 @@ func main() {
 
 	err := app.Run(os.Args)
 	if err != nil {
-		slogger.Fatalf("Application exited due to %v", err)
+		log.Fatalf("Application exited due to %v", err)
 	}
-	slogger.Debug("Application Ended")
+	if os.Getenv("DEV") == "dev" {
+		slogger.Debug("Application Ended")
+	}
 }
