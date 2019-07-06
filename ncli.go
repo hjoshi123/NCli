@@ -51,7 +51,8 @@ func main() {
 			Action: func(c *cli.Context) error {
 				ip, err := net.LookupIP(c.String("host"))
 				if err != nil {
-					fmt.Println(err)
+					slogger.Errorf("Error occured in ip %v", err)
+					return err
 				}
 				for i := 0; i < len(ip); i++ {
 					fmt.Println(ip[i])
@@ -66,7 +67,8 @@ func main() {
 			Action: func(c *cli.Context) error {
 				cname, err := net.LookupCNAME(c.String("host"))
 				if err != nil {
-					fmt.Println(err)
+					slogger.Errorf("Error occured in cname %v", err)
+					return err
 				}
 				fmt.Println(cname)
 				return nil
@@ -79,10 +81,27 @@ func main() {
 			Action: func(c *cli.Context) error {
 				mx, err := net.LookupMX(c.String("host"))
 				if err != nil {
-					fmt.Println(err)
+					slogger.Errorf("Error occured in mx %v", err)
+					return err
 				}
 				for i := 0; i < len(mx); i++ {
 					fmt.Println(mx[i].Host, mx[i].Pref)
+				}
+				return nil
+			},
+		},
+		{
+			Name:  "ha",
+			Usage: "Looks up the given host and gives out host's addresses. ",
+			Flags: flags,
+			Action: func(c *cli.Context) error {
+				addrs, err := net.LookupHost(c.String("host"))
+				if err != nil {
+					slogger.Errorf("Error occured in ha %v", err)
+					return err
+				}
+				for i := 0; i < len(addrs); i++ {
+					fmt.Println(addrs[i])
 				}
 				return nil
 			},
