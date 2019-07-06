@@ -72,6 +72,21 @@ func main() {
 				return nil
 			},
 		},
+		{
+			Name:  "mx",
+			Usage: "Looks up the MX (Mail Exchange) records for a particular host",
+			Flags: flags,
+			Action: func(c *cli.Context) error {
+				mx, err := net.LookupMX(c.String("host"))
+				if err != nil {
+					fmt.Println(err)
+				}
+				for i := 0; i < len(mx); i++ {
+					fmt.Println(mx[i].Host, mx[i].Pref)
+				}
+				return nil
+			},
+		},
 	}
 
 	err := app.Run(os.Args)
