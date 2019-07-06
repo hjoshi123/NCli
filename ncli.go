@@ -16,6 +16,7 @@ func main() {
 
 	app := cli.NewApp()
 	app.Name = "ncli"
+	app.Version = "0.0.1"
 	app.Usage = "Lets you query IPs, CNAMEs"
 
 	flags := []cli.Flag{
