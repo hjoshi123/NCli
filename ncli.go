@@ -5,9 +5,12 @@ import (
 	"log"
 	"net"
 	"os"
+	"time"
 
+	"github.com/hjoshi123/NCli/portscanner"
 	"github.com/urfave/cli"
 	"go.uber.org/zap"
+	"golang.org/x/sync/semaphore"
 )
 
 func main() {
@@ -19,13 +22,26 @@ func main() {
 
 	app := cli.NewApp()
 	app.Name = "ncli"
-	app.Version = "0.0.1"
+	app.Version = "0.0.2"
 	app.Usage = "Lets you query IPs, CNAMEs"
 
 	flags := []cli.Flag{
 		cli.StringFlag{
 			Name:  "host",
 			Value: "nuvonic.net",
+		},
+	}
+
+	portFlag := []cli.Flag{
+		cli.IntFlag{
+			Name:  "port1",
+			Value: 8080,
+			Usage: "Enter the beginning port range",
+		},
+		cli.IntFlag{
+			Name:  "port2",
+			Value: 8082,
+			Usage: "Enter the ending port range",
 		},
 	}
 
@@ -117,6 +133,19 @@ func main() {
 				for i := 0; i < len(addrs); i++ {
 					fmt.Println(addrs[i])
 				}
+				return nil
+			},
+		},
+		{
+			Name:  "port",
+			Usage: "Checks if the given range of ports at localhost is open or closed",
+			Flags: portFlag,
+			Action: func(c *cli.Context) error {
+				ps := &portscanner.PortScanner{
+					IP:   "127.0.0.1",
+					Lock: semaphore.NewWeighted(portscanner.Ulimit()),
+				}
+				ps.Start(c.Int("port1"), c.Int("port2"), 500*time.Millisecond)
 				return nil
 			},
 		},

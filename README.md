@@ -25,6 +25,7 @@ It includes lookup for CNAME, IP Address, MX Records and many more features to b
 - [x]  **MX Records**
 - [x]  **CNAME**
 - [x]  **IP Address of the host**
+- [x]  **Port Address Scanning**
 - [ ] more to come..
 
 ## Examples
@@ -50,10 +51,22 @@ ncli ip --host msrit.edu
 54.230.216.176
 ```
 
+* **Port Scanning**
+
+```
+ncli port --port1 80 --port2 100
+
+// port1 is the beginning port range and port2 is ending port range
+
+// Output
+// 80 open
+// 81 closed ...
+```
+
 * Check out `ncli --help` for more details on various commands. All commands unless mentioned require **--host** option.
 
 ## TODO
-* Port Scanning
+* You tell me.
 
 
 ### If this library helps you in anyway, show your love :heart: by putting a :star: on this project :v:
